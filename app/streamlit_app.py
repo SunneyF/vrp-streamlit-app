@@ -4,7 +4,7 @@ import pandas as pd
 from vrp_solver import solve_vrp
 
 def main():
-    st.title("VRP Solver Visualization - Updated!")
+    st.title("VRP Solver Visualization - Updated!- automation")
     st.subheader("An improved version of our VRP Solver demo")
     st.write("This updated app solves a simple VRP instance using OR-Tools and visualizes the optimal route on a map.")
 
