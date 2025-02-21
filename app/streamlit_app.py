@@ -4,10 +4,9 @@ import pandas as pd
 from vrp_solver import solve_vrp
 
 def main():
-    # Updated title and subtitle
-    st.title("VRP Solver Visualization - Enhanced!")
-    st.subheader("Now with improved insights and interactivity")
-    st.write("This app solves a simple VRP instance and visualizes the optimal route on an interactive map.")
+    st.title("VRP Solver Visualization - Updated!- automation")
+    st.subheader("An improved version of our VRP Solver demo")
+    st.write("This updated app solves a simple VRP instance using OR-Tools and visualizes the optimal route on a map.")
 
     if st.button("Solve VRP"):
         route = solve_vrp()
@@ -15,15 +14,21 @@ def main():
             st.success("VRP Solved!")
             st.write("Optimal Route:", " → ".join(map(str, route)))
             
-            # Visualization logic remains, perhaps with added features or improved layout
+            # Define fixed coordinates for nodes (example: nodes in San Francisco)
             node_coords = {
                 0: {"lat": 37.77, "lon": -122.42},
                 1: {"lat": 37.78, "lon": -122.41},
                 2: {"lat": 37.76, "lon": -122.43},
                 3: {"lat": 37.77, "lon": -122.41}
             }
+            
+            # Build the coordinate list according to the route
             coords = [node_coords[node] for node in route]
+            
+            # Create a DataFrame for scatter points (the nodes)
             df_points = pd.DataFrame(coords)
+            
+            # Build line data for consecutive nodes along the route
             line_data = []
             for i in range(len(coords) - 1):
                 line_data.append({
@@ -32,6 +37,8 @@ def main():
                     "end_lat": coords[i+1]["lat"],
                     "end_lon": coords[i+1]["lon"]
                 })
+            
+            # Define a Pydeck layer to draw the connecting lines (route)
             line_layer = pdk.Layer(
                 "LineLayer",
                 data=line_data,
@@ -40,6 +47,8 @@ def main():
                 get_color=[255, 0, 0],
                 get_width=5,
             )
+            
+            # Define a Pydeck layer to draw the node points
             point_layer = pdk.Layer(
                 "ScatterplotLayer",
                 data=df_points,
@@ -47,6 +56,8 @@ def main():
                 get_color=[0, 0, 255],
                 get_radius=50,
             )
+            
+            # Set the view state to center around the average coordinates
             avg_lat = sum(d["lat"] for d in coords) / len(coords)
             avg_lon = sum(d["lon"] for d in coords) / len(coords)
             view_state = pdk.ViewState(
@@ -55,6 +66,8 @@ def main():
                 zoom=12,
                 pitch=0
             )
+            
+            # Create the deck and display it
             deck = pdk.Deck(
                 layers=[line_layer, point_layer],
                 initial_view_state=view_state,
